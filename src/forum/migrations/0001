@@ -1,0 +1,46 @@
+anansi::operations! {
+    migrations::CreateModel {
+        prefix: "forum",
+        name: "topic",
+        fields: vec![
+            (
+                "id",
+                models::BigInt::field().primary_key()
+            ),
+            (
+                "title",
+                models::VarChar::<200>::field()
+            ),
+            (
+                "date",
+                models::DateTime::field()
+            ),
+        ],
+    },
+    migrations::CreateModel {
+        prefix: "forum",
+        name: "comment",
+        fields: vec![
+            (
+                "id",
+                models::BigInt::field().primary_key()
+            ),
+            (
+                "topic",
+                models::BigInt::field().foreign_key("forum", "topic", "id")
+            ),
+            (
+                "user",
+                models::BigInt::field().foreign_key("auth", "user", "id")
+            ),
+            (
+                "content",
+                models::VarChar::<40000>::field()
+            ),
+            (
+                "created",
+                models::DateTime::field()
+            ),
+        ],
+    },
+}

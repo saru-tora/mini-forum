@@ -1,0 +1,17 @@
+@extend base
+
+@block title {@title}
+
+@block content {
+    <h1>@title</h1>
+    @for (comment, user) in comments.iter().zip(users.iter()) {
+        <p><small>Posted by @user.username @ago(comment.created)</small></p>
+        <p>@comment.content</p>
+	@if comment.user.eq_model(req.user()) {
+            @if comment.pk() == comments[0].pk() {
+                @link req, Self::edit, topic {Edit}
+		@link req, Self::destroy, topic {Delete}
+            }
+        }
+    }
+}

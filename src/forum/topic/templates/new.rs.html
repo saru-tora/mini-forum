@@ -1,0 +1,20 @@
+@extend base
+
+@block title {@title}
+
+@block content {
+    <h1>@title</h1>
+    <div>
+    	@build form {
+	    @unescape form.errors()
+    	    @for field in form.fields() {
+    	        @unescape field.label_tag()
+    	        <div>
+		    @unescape field
+		    @unescape field.errors()
+    	        </div>
+    	    }
+	    @unescape form.submit(button)
+    	}
+    </div>
+}

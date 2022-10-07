@@ -1,0 +1,15 @@
+[package]
+name = "mini-forum"
+version = "0.2.0"
+edition = "2021"
+authors = ["sarutora"]
+license = "MIT"
+description = "A simple example of a forum built with Anansi."
+repository = "https://github.com/saru-tora/anansi"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anansi = { path = "../anansi/anansi" , version = "0.2.0" }
+async-trait = "0.1.57"
