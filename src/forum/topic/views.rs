@@ -5,34 +5,30 @@ use anansi::humanize::ago;
 use anansi::handle;
 use anansi::forms::ToModel;
 use anansi::util::auth::forms::UserLogin;
-use anansi::checker;
 use crate::forum::forms::TopicForm;
 use anansi::handle_or_404;
 use anansi::forms::ToEdit;
 
-checker!(if_auth<R: Request>, |req| req.check_auth(),
-    redirect!(req, TopicView::login)
-);
-
 #[base_view]
 fn base<R: Request>(_req: R) -> Result<Response> {}
 
-#[viewer]
+#[checker]
 impl<R: Request> TopicView<R> {
-    #[view(if_guest)]
+    #[check(Group::is_visitor)]
     pub async fn index(req: R) -> Result<Response> {
         let title = "Latest Topics";
         let topics = Topic::order_by(date().desc())
             .limit(25).query(&req).await?;
     }
-    #[view(if_guest)]
+    #[check(Group::is_visitor)]
     pub async fn show(req: R) -> Result<Response> {
         let topic = get_or_404!(Topic, req);
         let title = &topic.title;
+        let poster = topic.user.get(&req).await?.username;
         let comments = topic.recent_comments().limit(25).query(&req).await?;
-        let users = comments.parents(|c| &c.user).query(&req).await?;
+        let users = comments.parents(&req, |c| &c.user).await?;
     }
-    #[view(if_guest)]
+    #[check(Group::is_visitor)]
     pub async fn login(mut req: R) -> Result<Response> {
         let title = "Log in";
         let button = "Log in";
@@ -41,7 +37,7 @@ impl<R: Request> TopicView<R> {
     	    req.session().set_and_redirect(&req, Self::index)
         })?;
     }
-    #[view(if_auth)]
+    #[check(Group::is_auth)]
     pub async fn new(mut req: R) -> Result<Response> {
         let title = "New Topic";
         let button = "Create";
@@ -49,7 +45,7 @@ impl<R: Request> TopicView<R> {
     	    Ok(redirect!(req, Self::show, topic))
         })?;
     }
-    #[view(if_auth)]
+    #[check(Topic::owner)]
     pub async fn edit(mut req: R) -> Result<Response> {
         let title = "Update Topic";
         let button = "Update";
@@ -57,7 +53,7 @@ impl<R: Request> TopicView<R> {
     	    Ok(redirect!(req, Self::show, topic))
         })?;
     }
-    #[view(if_auth)]
+    #[check(Topic::owner)]
     pub async fn destroy(mut req: R) -> Result<Response> {
         let title = "Delete topic";
         let topic = get_or_404!(Topic, req);

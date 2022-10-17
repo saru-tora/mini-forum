@@ -1,11 +1,11 @@
 {let _title = {{let mut _c = String::new();_c.push_str("");_c.push_str(&anansi::web::html_escape(&format!("{}", title)));_c.push_str(""); _c}};let _content = {{let mut _c = String::new();_c.push_str("    <h1>");_c.push_str(&anansi::web::html_escape(&format!("{}", title)));_c.push_str("</h1>
+    <p><small>Posted by ");_c.push_str(&anansi::web::html_escape(&format!("{}", poster)));_c.push_str(" ");_c.push_str(&anansi::web::html_escape(&format!("{}", ago(topic.date))));_c.push_str("</small></p>
+    <p>");_c.push_str(&anansi::web::html_escape(&format!("{}", topic.content)));_c.push_str("</p>
+    ");if topic.user.pk() == req.user().pk() {_c.push_str("
+        ");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::edit,  topic )));_c.push_str("Edit");_c.push_str("</a>
+	");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::destroy,  topic )));_c.push_str("Delete");_c.push_str("</a>
+    ");}_c.push_str("
     ");for (comment, user) in comments.iter().zip(users.iter()) {_c.push_str("
-        <p><small>Posted by ");_c.push_str(&anansi::web::html_escape(&format!("{}", user.username)));_c.push_str(" ");_c.push_str(&anansi::web::html_escape(&format!("{}", ago(comment.created))));_c.push_str("</small></p>
+        <p><small>Posted by ");_c.push_str(&anansi::web::html_escape(&format!("{}", user.username)));_c.push_str(" ");_c.push_str(&anansi::web::html_escape(&format!("{}", ago(comment.date))));_c.push_str("</small></p>
         <p>");_c.push_str(&anansi::web::html_escape(&format!("{}", comment.content)));_c.push_str("</p>
-	");if comment.user.eq_model(req.user()) {_c.push_str("
-            ");if comment.pk() == comments[0].pk() {_c.push_str("
-                ");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::edit,  topic )));_c.push_str("Edit");_c.push_str("</a>
-		");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::destroy,  topic )));_c.push_str("Delete");_c.push_str("</a>
-            ");}_c.push_str("
-        ");}_c.push_str("
     ");}_c.push_str(""); _c}};base(req, BaseArgs{_title, _content, })}

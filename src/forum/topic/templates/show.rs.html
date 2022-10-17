@@ -4,14 +4,14 @@
 
 @block content {
     <h1>@title</h1>
+    <p><small>Posted by @poster @ago(topic.date)</small></p>
+    <p>@topic.content</p>
+    @if topic.user.pk() == req.user().pk() {
+        @link req, Self::edit, topic {Edit}
+	@link req, Self::destroy, topic {Delete}
+    }
     @for (comment, user) in comments.iter().zip(users.iter()) {
-        <p><small>Posted by @user.username @ago(comment.created)</small></p>
+        <p><small>Posted by @user.username @ago(comment.date)</small></p>
         <p>@comment.content</p>
-	@if comment.user.eq_model(req.user()) {
-            @if comment.pk() == comments[0].pk() {
-                @link req, Self::edit, topic {Edit}
-		@link req, Self::destroy, topic {Delete}
-            }
-        }
     }
 }

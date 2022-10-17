@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use anansi::models::{DateTime, ForeignKey};
 use anansi::forms::{VarChar, ToModel};
-use super::models::{Topic, Comment};
+use super::models::Topic;
 use anansi::web::FormMap;
 use anansi::forms::{GetData, ToEdit};
 
@@ -15,15 +15,9 @@ pub struct TopicForm {
 impl<R: Request> ToModel<R> for TopicForm {
     async fn on_post(&mut self, data: TopicFormData, req: &R) -> Result<Topic> {
         let now = DateTime::now();
-        transact!(req, {
-            let topic = Topic::new(data.title, now).save(req).await
-                .or(form_error!("Problem adding topic"))?;
-            let topic_fk = ForeignKey::new(&topic);
-            let user_fk = ForeignKey::new(req.user());
-            Comment::new(topic_fk, user_fk, data.content, now).save(req).await
-                .or(form_error!("Problem adding comment"))?;
-            Ok(topic)
-        })
+        let user_fk = ForeignKey::from_data(req.user().pk())?;
+        Topic::new(data.title, user_fk, data.content, now).save(req).await
+            .or(form_error!("Problem adding topic"))
     }
 }
 
@@ -34,22 +28,18 @@ impl<R: Request> GetData<R> for TopicForm {
         let content = form_map.get("content")?.parse()?;
         Ok(TopicFormData::new(title, content))
     }
-    async fn from_model(topic: Topic, req: &R) -> Result<TopicFormData> {
-        let comment = topic.recent_comments().get(req).await?;
-        Ok(TopicFormData::new(topic.title, comment.content))
+    async fn from_model(topic: Topic, _req: &R) -> Result<TopicFormData> {
+        Ok(TopicFormData::new(topic.title, topic.content))
     }
 }
 
 #[async_trait]
 impl<R: Request> ToEdit<R> for TopicForm {
     async fn on_post(&mut self, data: TopicFormData, req: &R) -> Result<Topic> {
-        let (mut topic, mut comment) = Topic::first_post(req).await?;
+	let mut topic: Topic = req.get_model().await?;
         topic.title = data.title;
-        comment.content = data.content;
-        transact!(req, {
-            topic.update(req).await?;
-            comment.update(req).await?;
-            Ok(topic)
-        })
+        topic.content = data.content;
+        topic.update(req).await?;
+        Ok(topic)
     }
 }

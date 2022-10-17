@@ -1,9 +1,9 @@
 {let _title = {{let mut _c = String::new();_c.push_str("");_c.push_str(&anansi::web::html_escape(&format!("{}", title)));_c.push_str(""); _c}};let _content = {{let mut _c = String::new();_c.push_str("	<h1>");_c.push_str(&anansi::web::html_escape(&format!("{}", title)));_c.push_str("</h1>
+	");if req.user().is_auth() {_c.push_str("
+	");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::new )));_c.push_str("New Topic");_c.push_str("</a>
+    ");}_c.push_str("
 	<ul>
-            ");for topic in topics {_c.push_str("
-	        <li>");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::show,  topic )));_c.push_str("");_c.push_str(&anansi::web::html_escape(&format!("{}", topic.title)));_c.push_str("");_c.push_str("</a></li>
-            ");}_c.push_str("
-        </ul>
-        ");if req.user().is_auth() {_c.push_str("
-            ");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::new )));_c.push_str("New Topic");_c.push_str("</a>
-        ");}_c.push_str(""); _c}};base(req, BaseArgs{_title, _content, })}
+        ");for topic in topics {_c.push_str("
+	<li>");_c.push_str(&format!("<a href=\"{}\">", anansi::url!(req,  Self::show,  topic )));_c.push_str("");_c.push_str(&anansi::web::html_escape(&format!("{}", topic.title)));_c.push_str("");_c.push_str("</a></li>
+        ");}_c.push_str("
+    </ul>"); _c}};base(req, BaseArgs{_title, _content, })}

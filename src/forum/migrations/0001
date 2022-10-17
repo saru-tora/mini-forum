@@ -12,8 +12,46 @@ anansi::operations! {
                 models::VarChar::<200>::field()
             ),
             (
+                "user",
+                models::BigInt::field().foreign_key("auth", "user", "id")
+            ),
+            (
+                "content",
+                models::VarChar::<40000>::field()
+            ),
+            (
                 "date",
                 models::DateTime::field()
+            ),
+        ],
+    },
+    migrations::CreateModel {
+        prefix: "forum",
+        name: "topictuple",
+        fields: vec![
+            (
+                "id",
+                models::BigInt::field().primary_key()
+            ),
+            (
+                "subject_namespace",
+                models::Text::field()
+            ),
+            (
+                "subject_key",
+                models::BigInt::field()
+            ),
+            (
+                "subject_predicate",
+                models::Text::field().null()
+            ),
+            (
+                "object_key",
+                models::BigInt::field()
+            ),
+            (
+                "object_predicate",
+                models::Text::field()
             ),
         ],
     },
@@ -38,8 +76,38 @@ anansi::operations! {
                 models::VarChar::<40000>::field()
             ),
             (
-                "created",
+                "date",
                 models::DateTime::field()
+            ),
+        ],
+    },
+    migrations::CreateModel {
+        prefix: "forum",
+        name: "commenttuple",
+        fields: vec![
+            (
+                "id",
+                models::BigInt::field().primary_key()
+            ),
+            (
+                "subject_namespace",
+                models::Text::field()
+            ),
+            (
+                "subject_key",
+                models::BigInt::field()
+            ),
+            (
+                "subject_predicate",
+                models::Text::field().null()
+            ),
+            (
+                "object_key",
+                models::BigInt::field()
+            ),
+            (
+                "object_predicate",
+                models::Text::field()
             ),
         ],
     },

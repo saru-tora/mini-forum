@@ -1,4 +1,5 @@
 use anansi::migrations::prelude::*;
 
-anansi::local_migrations! {    "0001",
+local_migrations! {
+    "0001",
 }
