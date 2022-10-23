@@ -1,10 +1,10 @@
-use anansi::{model, Relate, FromParams};
-use anansi::models::{VarChar, DateTime, ForeignKey};
-use anansi::util::auth::models::User;
+use anansi::{record, Relate, FromParams};
+use anansi::records::{VarChar, DateTime, ForeignKey};
+use anansi::util::auth::records::User;
 use anansi::db::OrderBy;
 use anansi::ToUrl;
 
-#[model]
+#[record]
 #[derive(Relate, FromParams, ToUrl)]
 pub struct Topic {
     pub title: VarChar<200>,
@@ -20,7 +20,7 @@ impl Topic {
     }
 }
 
-#[model]
+#[record]
 #[derive(Relate, FromParams)]
 pub struct Comment {
     pub topic: ForeignKey<Topic>,

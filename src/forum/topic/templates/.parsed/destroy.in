@@ -2,4 +2,4 @@
     Are you sure you want to delete the topic \"");_c.push_str(&anansi::web::html_escape(&format!("{}", topic.title)));_c.push_str("\"?
     ");_c.push_str(&form.tag()); if let Some(token_tag) = form.token_tag() { _c.push_str(&token_tag) } {_c.push_str("
         ");_c.push_str(&format!("{}", form.submit("Confirm")));_c.push_str("
-    </form>");}_c.push_str(""); _c}};base(req, BaseArgs{_title, _content, })}
+    </form>");}_c.push_str(""); _c}};base::base(req, base::Args{_title, _content, })}

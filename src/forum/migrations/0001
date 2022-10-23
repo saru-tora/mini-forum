@@ -1,113 +1,113 @@
 anansi::operations! {
-    migrations::CreateModel {
+    migrations::CreateRecord {
         prefix: "forum",
         name: "topic",
         fields: vec![
             (
                 "id",
-                models::BigInt::field().primary_key()
+                records::BigInt::field().primary_key()
             ),
             (
                 "title",
-                models::VarChar::<200>::field()
+                records::VarChar::<200>::field()
             ),
             (
                 "user",
-                models::BigInt::field().foreign_key("auth", "user", "id")
+                records::BigInt::field().foreign_key("auth", "user", "id")
             ),
             (
                 "content",
-                models::VarChar::<40000>::field()
+                records::VarChar::<40000>::field()
             ),
             (
                 "date",
-                models::DateTime::field()
+                records::DateTime::field()
             ),
         ],
     },
-    migrations::CreateModel {
+    migrations::CreateRecord {
         prefix: "forum",
         name: "topictuple",
         fields: vec![
             (
                 "id",
-                models::BigInt::field().primary_key()
+                records::BigInt::field().primary_key()
             ),
             (
                 "subject_namespace",
-                models::Text::field()
+                records::Text::field()
             ),
             (
                 "subject_key",
-                models::BigInt::field()
+                records::BigInt::field()
             ),
             (
                 "subject_predicate",
-                models::Text::field().null()
+                records::Text::field().null()
             ),
             (
                 "object_key",
-                models::BigInt::field()
+                records::BigInt::field()
             ),
             (
                 "object_predicate",
-                models::Text::field()
+                records::Text::field()
             ),
         ],
     },
-    migrations::CreateModel {
+    migrations::CreateRecord {
         prefix: "forum",
         name: "comment",
         fields: vec![
             (
                 "id",
-                models::BigInt::field().primary_key()
+                records::BigInt::field().primary_key()
             ),
             (
                 "topic",
-                models::BigInt::field().foreign_key("forum", "topic", "id")
+                records::BigInt::field().foreign_key("forum", "topic", "id")
             ),
             (
                 "user",
-                models::BigInt::field().foreign_key("auth", "user", "id")
+                records::BigInt::field().foreign_key("auth", "user", "id")
             ),
             (
                 "content",
-                models::VarChar::<40000>::field()
+                records::VarChar::<40000>::field()
             ),
             (
                 "date",
-                models::DateTime::field()
+                records::DateTime::field()
             ),
         ],
     },
-    migrations::CreateModel {
+    migrations::CreateRecord {
         prefix: "forum",
         name: "commenttuple",
         fields: vec![
             (
                 "id",
-                models::BigInt::field().primary_key()
+                records::BigInt::field().primary_key()
             ),
             (
                 "subject_namespace",
-                models::Text::field()
+                records::Text::field()
             ),
             (
                 "subject_key",
-                models::BigInt::field()
+                records::BigInt::field()
             ),
             (
                 "subject_predicate",
-                models::Text::field().null()
+                records::Text::field().null()
             ),
             (
                 "object_key",
-                models::BigInt::field()
+                records::BigInt::field()
             ),
             (
                 "object_predicate",
-                models::Text::field()
+                records::Text::field()
             ),
         ],
     },

@@ -1,10 +1,11 @@
 use crate::prelude::*;
-use super::super::models::{Topic, topic::date};
+use super::super::records::{Topic, topic::date};
 use anansi::get_or_404;
 use anansi::humanize::ago;
 use anansi::handle;
-use anansi::forms::ToModel;
+use anansi::forms::ToRecord;
 use anansi::util::auth::forms::UserLogin;
+use anansi::{check, render};
 use crate::forum::forms::TopicForm;
 use anansi::handle_or_404;
 use anansi::forms::ToEdit;
@@ -12,15 +13,15 @@ use anansi::forms::ToEdit;
 #[base_view]
 fn base<R: Request>(_req: R) -> Result<Response> {}
 
-#[checker]
+#[record_view]
 impl<R: Request> TopicView<R> {
-    #[check(Group::is_visitor)]
+    #[view(Group::is_visitor)]
     pub async fn index(req: R) -> Result<Response> {
         let title = "Latest Topics";
         let topics = Topic::order_by(date().desc())
             .limit(25).query(&req).await?;
     }
-    #[check(Group::is_visitor)]
+    #[view(Group::is_visitor)]
     pub async fn show(req: R) -> Result<Response> {
         let topic = get_or_404!(Topic, req);
         let title = &topic.title;
@@ -28,11 +29,11 @@ impl<R: Request> TopicView<R> {
         let comments = topic.recent_comments().limit(25).query(&req).await?;
         let users = comments.parents(&req, |c| &c.user).await?;
     }
-    #[check(Group::is_visitor)]
+    #[view(Group::is_visitor)]
     pub async fn login(mut req: R) -> Result<Response> {
         let title = "Log in";
         let button = "Log in";
-        let form = handle!(UserLogin, ToModel<R>, req, user, {
+        let form = handle!(UserLogin, ToRecord<R>, req, user, {
             req.auth(&user).await?;
     	    req.session().set_and_redirect(&req, Self::index)
         })?;
@@ -41,9 +42,10 @@ impl<R: Request> TopicView<R> {
     pub async fn new(mut req: R) -> Result<Response> {
         let title = "New Topic";
         let button = "Create";
-        let form = handle!(TopicForm, ToModel<R>, req, |topic| {
+        let form = handle!(TopicForm, ToRecord<R>, req, |topic| {
     	    Ok(redirect!(req, Self::show, topic))
         })?;
+        render!("login")
     }
     #[check(Topic::owner)]
     pub async fn edit(mut req: R) -> Result<Response> {
@@ -52,8 +54,9 @@ impl<R: Request> TopicView<R> {
         let form = handle_or_404!(TopicForm, ToEdit<R>, req, |topic| {
     	    Ok(redirect!(req, Self::show, topic))
         })?;
+        render!("login")
     }
-    #[check(Topic::owner)]
+    #[view(Topic::owner)]
     pub async fn destroy(mut req: R) -> Result<Response> {
         let title = "Delete topic";
         let topic = get_or_404!(Topic, req);

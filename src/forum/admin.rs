@@ -1,8 +1,11 @@
-use anansi::{init_admin, register, model_admin};
-use super::models::Topic;
+use anansi::{init_admin, register, record_admin};
+use super::records::Topic;
 
 init_admin! {
     register!(Topic),
 }
 
-model_admin!(Topic {});
+record_admin! {
+    record: Topic,
+    search_fields: [title, content, date],
+}
