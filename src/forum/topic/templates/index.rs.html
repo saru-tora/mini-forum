@@ -4,7 +4,7 @@
 
 @block content {
 	<h1>@title</h1>
-	@if req.user().is_auth() {
+	@if req.user().is_authenticated() {
 	@link req, Self::new {New Topic}
     	}
 	<ul>
