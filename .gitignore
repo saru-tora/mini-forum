@@ -1,3 +1,4 @@
 /target
 /settings.toml
+/database.db*/settings.toml
 /database.db*

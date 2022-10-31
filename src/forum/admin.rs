@@ -5,7 +5,6 @@ init_admin! {
     register!(Topic),
 }
 
-record_admin! {
-    record: Topic,
+record_admin! {Topic,
     search_fields: [title, content, date],
 }

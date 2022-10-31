@@ -14,6 +14,7 @@ anansi::operations! {
             (
                 "user",
                 records::BigInt::field().foreign_key("auth", "user", "id")
+                    .index("forum_topic", "user")
             ),
             (
                 "content",
@@ -66,10 +67,12 @@ anansi::operations! {
             (
                 "topic",
                 records::BigInt::field().foreign_key("forum", "topic", "id")
+                    .index("forum_comment", "topic")
             ),
             (
                 "user",
                 records::BigInt::field().foreign_key("auth", "user", "id")
+                    .index("forum_comment", "user")
             ),
             (
                 "content",
