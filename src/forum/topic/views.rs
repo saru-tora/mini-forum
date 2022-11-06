@@ -1,11 +1,12 @@
 use crate::prelude::*;
 use super::super::records::{Topic, topic::date};
+use anansi::cache::prelude::*;
 use anansi::get_or_404;
 use anansi::humanize::ago;
 use anansi::handle;
 use anansi::forms::ToRecord;
 use anansi::util::auth::forms::UserLogin;
-use anansi::{check, render};
+use anansi::{check, extend};
 use crate::forum::forms::TopicForm;
 use anansi::handle_or_404;
 use anansi::forms::ToEdit;
@@ -13,13 +14,15 @@ use anansi::forms::ToEdit;
 #[base_view]
 fn base<R: Request>(_req: &mut R) -> Result<Response> {}
 
-#[record_view]
+#[viewer]
 impl<R: Request> TopicView<R> {
     #[view(Group::is_visitor)]
     pub async fn index(req: &mut R) -> Result<Response> {
         let title = "Latest Topics";
-        let topics = Topic::order_by(date().desc())
-            .limit(25).query(req).await?;
+        let topics = cache!(req, Some(30), "topic_index", {
+            Topic::order_by(date().desc())
+                .limit(25).query(req).await?
+        });
     }
     #[view(Group::is_visitor)]
     pub async fn show(req: &mut R) -> Result<Response> {
@@ -45,7 +48,7 @@ impl<R: Request> TopicView<R> {
         let form = handle!(TopicForm, ToRecord<R>, req, |topic| {
     	    Ok(redirect!(req, Self::show, topic))
         })?;
-        render!("login")
+        extend!(req, base, "login")
     }
     #[check(Topic::owner)]
     pub async fn edit(req: &mut R) -> Result<Response> {
@@ -54,7 +57,7 @@ impl<R: Request> TopicView<R> {
         let form = handle_or_404!(TopicForm, ToEdit<R>, req, |topic| {
     	    Ok(redirect!(req, Self::show, topic))
         })?;
-        render!("login")
+        extend!(req, base, "login")
     }
     #[view(Topic::owner)]
     pub async fn destroy(req: &mut R) -> Result<Response> {

@@ -8,5 +8,4 @@
 		<h1>404</h1>
 		<p>Page not found.</p>
 	</body>
-</html>
-");Ok(anansi::web::Response::new("HTTP/1.1 200 OK", _c.into_bytes()))}
+</html>");Ok(anansi::web::Response::new("HTTP/1.1 200 OK", _c.into_bytes()))}

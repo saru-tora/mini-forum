@@ -1,11 +1,12 @@
 use anansi::{record, Relate, FromParams};
 use anansi::records::{VarChar, DateTime, ForeignKey};
 use anansi::util::auth::records::User;
+use serde::{Serialize, Deserialize};
 use anansi::db::OrderBy;
 use anansi::ToUrl;
 
 #[record]
-#[derive(Relate, FromParams, ToUrl)]
+#[derive(Relate, FromParams, Serialize, Deserialize, ToUrl)]
 pub struct Topic {
     pub title: VarChar<200>,
     #[field(app = "auth")]
